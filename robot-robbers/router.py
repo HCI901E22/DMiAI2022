@@ -16,7 +16,7 @@ def predict(request: RobotRobbersPredictRequestDto):
 
     # Your moves go here!
     n_robbers = 5
-    moves = [np.random.randint(-1, 2) for _ in range(n_robbers * 2)]
+    moves = [0 for _ in range(n_robbers * 2)]
 
     return RobotRobbersPredictResponseDto(
         moves=moves
