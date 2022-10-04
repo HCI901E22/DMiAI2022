@@ -1,0 +1,9 @@
+{
+    "id": "YZ4NM7",
+    "name": "pig-piglet-detection",
+    "containerName": "emily-pig-piglet-detection-yz4nm7",
+    "image": "tf-cv",
+    "imageVersion": "2.0.0",
+    "emilyVersion": "3.0.5",
+    "mountTargets": []
+}
