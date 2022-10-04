@@ -1,0 +1,9 @@
+{
+    "id": "TTO7H6",
+    "name": "robot-robbers",
+    "containerName": "emily-robot-robbers-tto7h6",
+    "image": "tf-slim",
+    "imageVersion": "2.0.0",
+    "emilyVersion": "3.0.5",
+    "mountTargets": []
+}

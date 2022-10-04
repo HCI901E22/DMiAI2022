@@ -21,3 +21,4 @@ def predict(request: RobotRobbersPredictRequestDto):
     return RobotRobbersPredictResponseDto(
         moves=moves
     )
+
