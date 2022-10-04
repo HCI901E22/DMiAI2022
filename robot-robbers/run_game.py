@@ -14,7 +14,7 @@ while True:
     move = router.predict(env._get_observation())
 
     state, reward, is_done, info = env.step([
-        *move.moves
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ])
 
     env.render()
