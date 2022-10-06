@@ -63,7 +63,8 @@ class Trainer:
 
             if batch % 100 == 0:
                 loss, current = loss.item(), batch * len(X)
-                print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+                print(f"loss: {loss:>7f}  [{current/size * 100}%]", end='\r')
+        print()
 
     def test_loop(self, model, loss_fn):
         size = len(self.test_data.dataset)
