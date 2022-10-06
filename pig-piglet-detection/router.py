@@ -29,8 +29,8 @@ def predict_endpoint(request: PredictRequestDto):
 def decode_request(request: PredictRequestDto) -> np.ndarray:
     encoded_img: str = request.img
     im = Image.open(BytesIO(base64.b64decode(encoded_img)))
-    path = "image" + str(random.randint(0,10000)) + ".png"
-    im.save(path, 'PNG')
+    #path = "eval-images/image" + str(random.randint(0,10000)) + ".png"
+    #im.save(path, 'PNG')
     np_img = np.fromstring(base64.b64decode(encoded_img), np.uint8)
     return cv2.imdecode(np_img, cv2.IMREAD_ANYCOLOR)
 

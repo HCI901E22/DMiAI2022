@@ -12,27 +12,29 @@ class Model(nn.Module):
         super().__init__()
         self.sa = None
 
-        self.activation = nn.ReLU()
-        self.dropout = nn.Dropout(0.2)
-        self.loss = nn.MSELoss()
+        self.activation = nn.LeakyReLU()
+        self.dropout = nn.Dropout(0.33)
+        self.loss = nn.L1Loss()
+        self.scale = nn.Parameter(torch.FloatTensor([4]))
 
         self.seq = nn.Sequential(
-            nn.Linear(4, 32),
-            self.activation,
-            self.dropout,
-            nn.Linear(32, 256),
-            self.activation,
-            self.dropout,
-            nn.Linear(256, 1024),
-            self.activation,
-            self.dropout,
-            nn.Linear(1024, 1024),
-            self.activation,
-            self.dropout,
-            nn.Linear(1024, 128),
-            self.activation,
-            self.dropout,
-            nn.Linear(128, 1)
+            # nn.Linear(4, 1024),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(1024, 2048),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(2048, 1024),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(1024, 1024),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(1024, 128),
+            # self.activation,
+            # self.dropout,
+            nn.Linear(4, 1),
+            nn.Sigmoid()
         )
 
     def load(self, path=None):
@@ -42,7 +44,7 @@ class Model(nn.Module):
             self.load_state_dict(torch.load(path))
 
     def forward(self, x):
-        return self.seq(x)
+        return self.seq(x) * self.scale + 1
 
 
 def preprocess_data(text: str):
