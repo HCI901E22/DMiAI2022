@@ -3,7 +3,7 @@ from fastapi import APIRouter
 import torch
 from Model import Model
 from Trainer import Trainer
-from models.dtos import SentimentAnalysisRequestDto, SentimentAnalysisResponseDto, TrainRequestDto
+from models.dtos import SentimentAnalysisRequestDto, SentimentAnalysisResponseDto, TrainRequestDto, PathRequest
 
 router = APIRouter()
 
@@ -23,15 +23,15 @@ def predict_endpoint(request: SentimentAnalysisRequestDto):
     return response
 
 
-@router.get('/load/{path}')
-def load_endpoint(path: str):
-    model.load(path)
+@router.post('/load')
+def load_endpoint(request: PathRequest):
+    model.load(request.path)
     return "Model loaded"
 
 
-@router.get('/save/{path}')
-def save_endpoint(path: str):
-    torch.save(model.state_dict(), path)
+@router.post('/save')
+def save_endpoint(request: PathRequest):
+    torch.save(model.state_dict(), request.path)
 
 
 @router.post('/train')

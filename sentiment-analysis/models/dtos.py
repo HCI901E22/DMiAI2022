@@ -14,3 +14,7 @@ class TrainRequestDto(BaseModel):
     path: str
     lr: float
     epochs: int
+
+
+class PathRequest(BaseModel):
+    path: str
