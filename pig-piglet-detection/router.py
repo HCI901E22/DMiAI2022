@@ -6,9 +6,13 @@ from typing import List
 from loguru import logger
 from fastapi import APIRouter
 from models.dtos import PredictRequestDto, PredictResponseDto, BoundingBoxClassification
+from PIL import Image
+from io import BytesIO
 
 
+i = 0
 router = APIRouter()
+
 
 
 @router.post('/predict', response_model=PredictResponseDto)
@@ -25,6 +29,10 @@ def predict_endpoint(request: PredictRequestDto):
 
 def decode_request(request: PredictRequestDto) -> np.ndarray:
     encoded_img: str = request.img
+    im = Image.open(BytesIO(base64.b64decode(encoded_img)))
+    path = "image" + i + ".png"
+    i += 1
+    im.save(path, 'PNG')
     np_img = np.fromstring(base64.b64decode(encoded_img), np.uint8)
     return cv2.imdecode(np_img, cv2.IMREAD_ANYCOLOR)
 

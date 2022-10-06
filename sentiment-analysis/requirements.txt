@@ -3,6 +3,7 @@ fastapi~=0.85.0
 starlette~=0.20.4
 pydantic~=1.10.2
 loguru~=0.6.0
+nltk~=3.7
 # ---- Added by the Emily CLI ----
 asyncio
 Brotli
@@ -18,3 +19,5 @@ setuptools
 typing-extensions
 wheel
 zipp
+pandas~=1.5.0
+
