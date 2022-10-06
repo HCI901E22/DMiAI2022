@@ -35,10 +35,11 @@ class Model(nn.Module):
             nn.Linear(128, 1)
         )
 
-    def load(self, path):
+    def load(self, path=None):
         nltk.download('vader_lexicon')
         self.sa = SentimentIntensityAnalyzer()
-        self.load_state_dict(torch.load(path))
+        if path is not None:
+            self.load_state_dict(torch.load(path))
 
     def forward(self, x):
         return self.seq(x)

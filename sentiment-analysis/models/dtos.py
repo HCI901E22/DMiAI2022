@@ -8,3 +8,9 @@ class SentimentAnalysisRequestDto(BaseModel):
 
 class SentimentAnalysisResponseDto(BaseModel):
     scores: List[int]
+
+
+class TrainRequestDto(BaseModel):
+    path: str
+    lr: float
+    epochs: int
