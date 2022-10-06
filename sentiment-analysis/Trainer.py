@@ -60,10 +60,8 @@ class Trainer:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
-            if batch % 100 == 0:
-                loss, current = loss.item(), batch * len(X)
-                print(f"loss: {loss:>7f}  [{current/size * 100}%]", end='\r')
+            loss, current = loss.item(), batch * len(X)
+            print(f"loss: {loss:>7f}  [{current/size * 100:>0.1f}%]", end='\r')
         print()
 
     def test_loop(self, model, loss_fn):
@@ -81,4 +79,4 @@ class Trainer:
 
         test_loss /= num_batches
         correct /= size
-        print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+        print(f"Test Error: \n Accuracy: {(100 * correct):>0.4f}%, Avg loss: {test_loss:>8f} \n")

@@ -18,22 +18,22 @@ class Model(nn.Module):
         self.scale = nn.Parameter(torch.FloatTensor([4]))
 
         self.seq = nn.Sequential(
-            nn.Linear(4, 1024),
-            self.activation,
-            self.dropout,
-            nn.Linear(1024, 2048),
-            self.activation,
-            self.dropout,
-            nn.Linear(2048, 1024),
-            self.activation,
-            self.dropout,
+            # nn.Linear(4, 1024),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(1024, 2048),
+            # self.activation,
+            # self.dropout,
+            # nn.Linear(2048, 1024),
+            # self.activation,
+            # self.dropout,
             # nn.Linear(1024, 1024),
             # self.activation,
             # self.dropout,
             # nn.Linear(1024, 128),
             # self.activation,
             # self.dropout,
-            nn.Linear(1024, 1),
+            nn.Linear(4, 1),
             nn.Sigmoid()
         )
 

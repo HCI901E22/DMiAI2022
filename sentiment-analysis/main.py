@@ -6,6 +6,6 @@ print("Initializing model")
 model = Model().to("cuda")
 
 print("Loading datasets")
-t = Trainer(model, "data/Electronics.csv", 128)
+t = Trainer(model, "data/Electronics.csv", 256)
 print("Begin training")
-t.train(1e-5, 32)
+t.train(1e-2, 32)
