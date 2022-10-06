@@ -47,4 +47,4 @@ class Model(nn.Module):
 def preprocess_data(text: str):
     sa = SentimentIntensityAnalyzer()
     result = list(sa.polarity_scores(text).values())
-    return torch.tensor(result)
+    return result

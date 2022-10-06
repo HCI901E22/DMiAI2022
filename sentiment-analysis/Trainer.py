@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
+import numpy as np
 
 from Model import preprocess_data
 
@@ -11,20 +12,19 @@ class ReviewDataset(Dataset):
         self.data = pd.read_csv(csv_path).dropna().reset_index(drop=True)
         self.split_idx = round(test_train_split * len(self.data))
         self.data = self.data[:self.split_idx] if train else self.data[self.split_idx:]
-        vader = [preprocess_data(r) for r in self.data['reviewText']]
+        self.data = self.data.reset_index(drop=True)
+        vader = np.asarray([preprocess_data(r) for r in self.data['reviewText']])
         self.data['neg'] = vader[::, 0]
         self.data['neu'] = vader[::, 1]
         self.data['pos'] = vader[::, 2]
         self.data['comp'] = vader[::, 3]
-
-
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
 
-        return [self.data['neg'][idx], self.data['neu'][idx], self.data['pos'][idx], self.data['comp'][idx]], self.data['overall'][idx]
+        return torch.tensor([self.data['neg'][idx], self.data['neu'][idx], self.data['pos'][idx], self.data['comp'][idx]]), self.data['overall'][idx]
 
 
 class Trainer:
@@ -50,7 +50,7 @@ class Trainer:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         for batch, (X, y) in enumerate(self.train_data):
             # Compute prediction and loss
-            X = X.to(device)
+            X = X.to(device, torch.float)
             y = y.to(device, torch.float)
             pred = model(X)
             loss = loss_fn(pred, y)
@@ -71,7 +71,7 @@ class Trainer:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         with torch.no_grad():
             for X, y in self.test_data:
-                X = X.to(device)
+                X = X.to(device, torch.float)
                 y = y.to(device, torch.float)
                 pred = model(X)
                 test_loss += loss_fn(pred, y).item()
