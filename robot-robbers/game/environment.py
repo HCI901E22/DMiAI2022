@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 from gym import spaces
-
+from utilities.utilities import get_uptime
 from os import path
 
 legal_moves = set((-1, 1, 0))
@@ -148,7 +148,8 @@ class RobotRobbersEnv(gym.Env):
         # Move scrooges
         self._move_scrooges()
 
-        n_cashbags_on_screen = int(self._n_cashbags + self._cashbag_carriers.sum())
+        n_cashbags_on_screen = int(
+            self._n_cashbags + self._cashbag_carriers.sum())
 
         if n_cashbags_on_screen < self.max_n_cashbags:
             for ci in range(self.max_n_cashbags):
@@ -158,7 +159,8 @@ class RobotRobbersEnv(gym.Env):
                     self._n_cashbags += 1
 
         if self._n_dropspots < self.max_n_dropspots:
-            self._dropspot_positions[self._n_dropspots, :] = self._get_free_cell()
+            self._dropspot_positions[self._n_dropspots,
+                                     :] = self._get_free_cell()
             self._n_dropspots += 1
 
         episode_reward = self._reward
@@ -169,10 +171,12 @@ class RobotRobbersEnv(gym.Env):
         for i in range(self.n_robbers):
             self._robber_cooldown[i] -= 1
 
+        isDone = get_uptime().total_seconds() > 30
+
         return (
             self._get_observation(),
             episode_reward,
-            False,  # Never terminate
+            isDone,  # Never terminate
             {
                 "total_reward": self._total_reward,
                 "game_ticks": self._game_ticks

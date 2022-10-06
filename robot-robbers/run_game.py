@@ -15,6 +15,7 @@ predictDTO = 0
 
 current_key = None
 
+
 while True:
     if firstRun:
         state, reward, is_done, info = env.step(moveStart)
@@ -22,7 +23,6 @@ while True:
     else:
         moveDTO = router.predict(predictDTO)
         state, reward, is_done, info = env.step(moveDTO.moves)
-
     predict_data = {
         'state': state.tolist(),
         'reward': reward,
