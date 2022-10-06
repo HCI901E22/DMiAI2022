@@ -13,11 +13,12 @@ class ReviewDataset(Dataset):
         self.split_idx = round(test_train_split * len(self.data))
         self.data = self.data[:self.split_idx] if train else self.data[self.split_idx:]
         self.data = self.data.reset_index(drop=True)
-        vader = np.asarray([preprocess_data(r) for r in self.data['reviewText']])
-        self.data['neg'] = vader[::, 0]
-        self.data['neu'] = vader[::, 1]
-        self.data['pos'] = vader[::, 2]
-        self.data['comp'] = vader[::, 3]
+        if len(self.data.columns) == 2:
+            vader = np.asarray([preprocess_data(r) for r in self.data['reviewText']])
+            self.data['neg'] = vader[::, 0]
+            self.data['neu'] = vader[::, 1]
+            self.data['pos'] = vader[::, 2]
+            self.data['comp'] = vader[::, 3]
 
     def __len__(self):
         return len(self.data)
