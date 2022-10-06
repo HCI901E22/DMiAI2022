@@ -25,7 +25,7 @@ def predict_endpoint(request: SentimentAnalysisRequestDto):
 
 @router.post('/load')
 def load_endpoint(request: PathRequest):
-    model.load(request.path)
+    model.load_state_dict(torch.load(request.path, map_location=device))
     return "Model loaded"
 
 
