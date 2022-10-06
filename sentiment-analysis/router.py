@@ -1,7 +1,7 @@
 import random
 from fastapi import APIRouter
 import torch
-from Model import Model
+from Model import Model, preprocess_data
 from Trainer import Trainer
 from models.dtos import SentimentAnalysisRequestDto, SentimentAnalysisResponseDto, TrainRequestDto, PathRequest
 
@@ -16,8 +16,9 @@ model.load()
 def predict_endpoint(request: SentimentAnalysisRequestDto):
     # predicted_scores = [random.randint(1,5) for _ in request.reviews]
 
+    vader = [preprocess_data(t) for t in request.reviews]
     response = SentimentAnalysisResponseDto(
-        scores=model.forward(request.reviews)
+        scores=list(model.forward(torch.tensor(vader)))
     )
 
     return response
