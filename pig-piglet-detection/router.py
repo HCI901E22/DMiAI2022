@@ -10,7 +10,6 @@ from PIL import Image
 from io import BytesIO
 
 
-i = 0
 router = APIRouter()
 
 
@@ -30,7 +29,7 @@ def predict_endpoint(request: PredictRequestDto):
 def decode_request(request: PredictRequestDto) -> np.ndarray:
     encoded_img: str = request.img
     im = Image.open(BytesIO(base64.b64decode(encoded_img)))
-    path = "image" + i + ".png"
+    path = "image" + random.randint(0,10000) + ".png"
     i += 1
     im.save(path, 'PNG')
     np_img = np.fromstring(base64.b64decode(encoded_img), np.uint8)
