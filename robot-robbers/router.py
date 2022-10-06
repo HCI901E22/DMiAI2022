@@ -22,7 +22,7 @@ def predict(request: RobotRobbersPredictRequestDto):
         
     moves = []
     #Make path towards cash and then deposit
-    for x in range(5):
+    for x in range(3):
         if (request.state[5][x][0] > 0):
             path = Path.MakeMatrix(
                 roboPos(robots, x),
@@ -33,7 +33,7 @@ def predict(request: RobotRobbersPredictRequestDto):
                 closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
         moves += doMove((robots[x][0], robots[x][1]), path)
 
-    n_robbers = 5
+    moves += [0,0,0,0]
     
     return RobotRobbersPredictResponseDto(
         moves=moves
@@ -54,6 +54,8 @@ def closestBag(bags, robotPos, scrooges):
         if(math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
+        if(pos[0] == 0 and pos[1] == 0):
+            return robotPos
     return pos
 
 def closestDeposit(depos, robotPos, scrooges):
@@ -63,6 +65,8 @@ def closestDeposit(depos, robotPos, scrooges):
         if(math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
+        if(pos[0] == 0 and pos[1] == 0):
+            return robotPos
     return pos
 
 def checkScroogeNearby(item, scrooges):
@@ -75,7 +79,7 @@ def checkScroogeNearby(item, scrooges):
 def doMove(robotPos, path):
     move = []
     #Movement in X
-    if(len(path) == 0):
+    if(len(path) < 2):
         return [0, 0]
     if (robotPos[0] > path[1][0]):
         move += [-1]

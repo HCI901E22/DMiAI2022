@@ -20,10 +20,10 @@ def MakeMatrix(fromTile, toTile, state):
                     matrix[cy][cx] = 0
 
     for scrooge in state[1]:
-        if(scrooge[0] < 118 and scrooge[1] < 118 and scrooge[1] > 10 and scrooge[0] > 10):
-            for i in range(20):
-                for j in range(20):
-                    matrix[scrooge[1]  - 10 + i][scrooge[0]  - 10 + j] = 0
+        if(scrooge[0] < 112 and scrooge[1] < 112 and scrooge[1] > 16 and scrooge[0] > 16):
+            for i in range(30):
+                for j in range(30):
+                    matrix[scrooge[1]  - 15 + i][scrooge[0]  - 15 + j] = 0
 
     grid = Grid(matrix=matrix)
 

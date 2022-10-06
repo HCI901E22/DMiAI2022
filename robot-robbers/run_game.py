@@ -4,7 +4,7 @@ import router
 
 
 env = RobotRobbersEnv()
-env.reset(40)
+env.reset(2)
 env.render()
 sample = env.observation_space.sample()
 
