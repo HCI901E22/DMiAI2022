@@ -1,0 +1,26 @@
+<annotation>
+	<folder>data</folder>
+	<filename>2.PNG</filename>
+	<path>C:\Users\lasse\Documents\GitHub\keras-retinanet-pig\data\2.PNG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>848</width>
+		<height>565</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>piglet</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>41</xmin>
+			<ymin>59</ymin>
+			<xmax>581</xmax>
+			<ymax>511</ymax>
+		</bndbox>
+	</object>
+</annotation>
