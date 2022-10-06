@@ -10,9 +10,9 @@ from PIL import Image
 from io import BytesIO
 
 
-
-router = APIRouter()
 i = 0
+router = APIRouter()
+
 
 
 @router.post('/predict', response_model=PredictResponseDto)
