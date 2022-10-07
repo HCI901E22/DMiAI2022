@@ -43,7 +43,7 @@ def predict(request: RobotRobbersPredictRequestDto):
                     closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
-    moves += [0, 0, 0, 0]
+    #moves += [0, 0, 0, 0]
 
     return RobotRobbersPredictResponseDto(
         moves=moves
