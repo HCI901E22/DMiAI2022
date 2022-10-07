@@ -37,8 +37,8 @@ RUN sudo apt-get install python3-distutils
 COPY requirements.txt requirements.txt
 RUN pip install --disable-pip-version-check -r requirements.txt
 
-
-
+RUN mkdir "logs"
+RUN chown sentiment-analy logs
 
 
 # Copy all directory contents (sans .dockerignore) into container
