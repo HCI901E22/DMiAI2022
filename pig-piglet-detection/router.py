@@ -4,7 +4,7 @@ import base64
 import numpy as np
 from typing import List
 from loguru import logger
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from models.dtos import PredictRequestDto, PredictResponseDto, BoundingBoxClassification
 from PIL import Image
 from io import BytesIO
@@ -29,9 +29,10 @@ def predict_endpoint(request: PredictRequestDto):
     return response
 
 @router.get('/load')
-def load_model():
+def load_model(request: Request):
     import os
     from keras_retinanet_main.keras_retinanet.models import load_model
+    global model
     model = load_model('snapshots/mymodelv02.h5', backbone_name = 'resnet101')
     return "Model loded"
 
@@ -48,13 +49,13 @@ def decode_request(request: PredictRequestDto) -> np.ndarray:
 def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
     logger.info(f'Recieved image: {img.shape}')
     
-    import os
-    from keras_retinanet_main.keras_retinanet.models import load_model
-    model = load_model('snapshots/mymodelv02.h5', backbone_name = 'resnet101')
+    #import os
+    #from keras_retinanet_main.keras_retinanet.models import load_model
+    #model = load_model('snapshots/mymodelv02.h5', backbone_name = 'resnet101')
     # load retinanet model
     result: List[BoundingBoxClassification] = []
     
-    
+    global model
     boxes, scores, labels = model.predict(np.expand_dims(img, axis=0))
     count = 0
     for box, score, label in zip(boxes[0], scores[0], labels[0]):
@@ -63,7 +64,7 @@ def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
         if score < 0.5:
             print("breaking after " + str(count))
             break
-        b = BoundingBoxClassification(class_id=label, min_x=box[0]/img.shape[0], min_y=box[1]/img.shape[1], max_x=box[2]/img.shape[0], max_y=box[3]/img.shape[1], confidence=score)
+        b = BoundingBoxClassification(class_id=label, min_x=box[0]/img.shape[1], min_y=box[1]/img.shape[0], max_x=box[2]/img.shape[1], max_y=box[3]/img.shape[0], confidence=score)
         result.append(b)
     return result
 
