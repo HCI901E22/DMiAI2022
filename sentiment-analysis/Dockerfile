@@ -1,4 +1,4 @@
-FROM ambolt/emily:2.0.0-cuda-torch-nlp
+FROM ambolt/emily:2.0.0-tf-nlp
 
 WORKDIR /workspace
 
@@ -33,12 +33,11 @@ USER sentiment-analy
 ENV PATH="/home/sentiment-analy/.local/bin:$PATH"
 
 # Install Pip requirements
-RUN sudo apt-get install python3-distutils
 COPY requirements.txt requirements.txt
 RUN pip install --disable-pip-version-check -r requirements.txt
 
-RUN mkdir "logs"
-RUN chown sentiment-analy logs
+
+
 
 
 # Copy all directory contents (sans .dockerignore) into container

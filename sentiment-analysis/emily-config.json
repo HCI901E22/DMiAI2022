@@ -1,0 +1,9 @@
+{
+    "id": "JYD0WA",
+    "name": "sentiment-analysis",
+    "containerName": "emily-sentiment-analysis-jyd0wa",
+    "image": "cuda-tf-nlp",
+    "imageVersion": "2.0.0",
+    "emilyVersion": "3.0.5",
+    "mountTargets": []
+}

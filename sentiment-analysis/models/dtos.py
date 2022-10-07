@@ -7,14 +7,16 @@ class SentimentAnalysisRequestDto(BaseModel):
 
 
 class SentimentAnalysisResponseDto(BaseModel):
-    scores: List[float]
+    scores: List[int]
 
 
-class TrainRequestDto(BaseModel):
-    path: str
-    lr: float
-    epochs: int
+class TrainRequest(BaseModel):
+    data_path: str
+    save_path: str
 
 
-class PathRequest(BaseModel):
-    path: str
+class TrainResponse(BaseModel):
+    train_loss: float
+    train_accuracy: float
+    test_loss: float
+    test_accuracy: float

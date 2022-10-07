@@ -1,7 +1,0 @@
-
-version: "3"
-services:
-  emily-sentiment-analysis-74guaq:
-    volumes:
-      - ../../:/workspace:cached
-

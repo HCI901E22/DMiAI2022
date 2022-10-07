@@ -1,53 +1,61 @@
-import os
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
-import nltk
+from tensorflow.keras.models import Sequential
+from tensorflow.keras import layers
+import pickle
+from sklearn.feature_extraction.text import CountVectorizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
 
 
-class Model(nn.Module):
+class Model(Sequential):
 
-    def __init__(self):
-        super().__init__()
-        self.sa = None
+    def new(self, input_dim):
+        self.input_dim = input_dim
+        self.add(layers.Dense(10, input_dim=input_dim, activation='relu'))
+        self.add(layers.Dropout(0.02))
+        self.add(layers.Dense(1024, activation='relu'))
+        self.add(layers.Dropout(0.02))
+        self.add(layers.Dense(2048, activation='relu'))
+        self.add(layers.Dropout(0.02))
+        self.add(layers.Dense(1024, activation='relu'))
+        self.add(layers.Dropout(0.02))
+        # self.add(layers.Dense(128, activation='relu'))
+        # self.add(layers.Dense(64, activation='relu'))
+        self.add(layers.Dense(10, activation='relu'))
+        self.add(layers.Dropout(0.02))
+        self.add(layers.Dense(1, activation='relu'))
+        self.compile(loss='mean_absolute_error', optimizer='adam', metrics=['accuracy'])
 
-        self.activation = nn.LeakyReLU()
-        self.dropout = nn.Dropout(0.33)
-        self.loss = nn.L1Loss()
-        self.scale = nn.Parameter(torch.FloatTensor([4]))
+    def _postprocess_data(self, sample):
+        base = 0.5
+        sample = [base * round(float(x) / base) for x in sample]
+        return sample
 
-        self.seq = nn.Sequential(
-            nn.Linear(4, 64),
-            self.activation,
-            self.dropout,
-            nn.Linear(64, 512),
-            self.activation,
-            self.dropout,
-            nn.Linear(512, 32),
-            self.activation,
-            self.dropout,
-            # nn.Linear(1024, 1024),
-            # self.activation,
-            # self.dropout,
-            # nn.Linear(1024, 128),
-            # self.activation,
-            # self.dropout,
-            nn.Linear(32, 1),
-            nn.Sigmoid()
-        )
+    def forward(self, sample):
+        sid = SentimentIntensityAnalyzer()
+        vader = [sid.polarity_scores(s)['compound'] for s in sample]
+        vader = [((s * 5) + 5) / 2 for s in vader]
+        sample = self._preprocess_data(sample)
+        result = self.predict(sample)
+        result = [(v[0] * 0.2 + v[1] * 0.8) for v in zip(vader, result)]
+        return self._postprocess_data(result)
 
-    def load(self, path=None):
+    def _preprocess_data(self, data):
+        data = self.vectorizer.transform(data)
+        return data
+
+    def save_model(self, save_path):
+        with open(save_path + "/input_dim", 'wb') as fp:
+            pickle.dump(self.input_dim, fp)
+        with open(save_path + "/vocabulary", 'wb') as fp:
+            pickle.dump(self.vectorizer.vocabulary_, fp)
+        self.save_weights(save_path + "/weights.json")
+
+    def load_model(self, model_path):
+        with open(model_path + "/input_dim", 'rb') as fp:
+            input_dim = pickle.load(fp)
+        with open(model_path + "/vocabulary", 'rb') as fp:
+            v = pickle.load(fp)
+            self.vectorizer = CountVectorizer(vocabulary=v)
         nltk.download('vader_lexicon')
-        self.sa = SentimentIntensityAnalyzer()
-        if path is not None:
-            self.load_state_dict(torch.load(path))
-
-    def forward(self, x):
-        return self.seq(x) * self.scale + 1
-
-
-def preprocess_data(text: str):
-    sa = SentimentIntensityAnalyzer()
-    result = list(sa.polarity_scores(text).values())
-    return result
+        self.new(input_dim)
+        self.load_weights(model_path + "/weights.json")
