@@ -21,8 +21,7 @@ def predict(request: RobotRobbersPredictRequestDto):
     dropspots = [(x, y, w, h)
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
-    #with open('logs/log.txt', 'a') as file:
-    #    file.write(str(request.state) + "\n")
+
     #print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
@@ -44,6 +43,9 @@ def predict(request: RobotRobbersPredictRequestDto):
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
     moves += [0, 0, 0, 0]
+
+    with open('logs/log.txt', 'a') as file:
+        file.write("moves: " + str(moves) + " total_reward: " + str(request.total_reward) + "\n")
 
     return RobotRobbersPredictResponseDto(
         moves=moves
