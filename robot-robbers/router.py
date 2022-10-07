@@ -6,8 +6,8 @@ import Path
 import math
 
 router = APIRouter()
-
 paths = [[],[],[],[],[]]
+
 
 @router.post('/predict', response_model=RobotRobbersPredictResponseDto)
 def predict(request: RobotRobbersPredictRequestDto):
@@ -20,7 +20,8 @@ def predict(request: RobotRobbersPredictRequestDto):
     dropspots = [(x, y, w, h)
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
-
+    with open('log/log.txt', 'a') as file:
+        file.write(str(request.state))
     print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
@@ -42,7 +43,6 @@ def predict(request: RobotRobbersPredictRequestDto):
     return RobotRobbersPredictResponseDto(
         moves=moves
     )
-
 
 def roboPos(robots, robotNum):
     return (robots[robotNum][0], robots[robotNum][1])
