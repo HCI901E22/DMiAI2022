@@ -21,7 +21,7 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
     with open('logs/log.txt', 'a') as file:
-        file.write(str(request.state))
+        file.write(str(request.state) + "\n")
     print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
