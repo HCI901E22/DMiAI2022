@@ -20,7 +20,7 @@ def predict(request: RobotRobbersPredictRequestDto):
     dropspots = [(x, y, w, h)
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
-    with open('log/log.txt', 'a') as file:
+    with open('logs/log.txt', 'a') as file:
         file.write(str(request.state))
     print(request.total_reward)
     moves = []
