@@ -7,6 +7,8 @@ env.reset(42)
 env.render()
 sample = env.observation_space.sample()
 
+router.reset()
+
 # My variables
 moveStart = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 firstRun = True
