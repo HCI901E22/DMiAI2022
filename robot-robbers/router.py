@@ -26,15 +26,14 @@ def predict(request: RobotRobbersPredictRequestDto):
     moves = []
     # Make path towards cash and then deposit
     for x in range(3):
-        if(len(paths[x]) < 2 or checkScroogeNearby(roboPos(robots, x), scrooges)):
-            if (request.state[5][x][0] > 0):
-                paths[x] = Path.MakeMatrix(
-                    roboPos(robots, x),
-                    closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
-            else:
-                paths[x] = Path.MakeMatrix(
-                    roboPos(robots, x),
-                    closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
+        if (request.state[5][x][0] > 0):
+            paths[x] = Path.MakeMatrix(
+                roboPos(robots, x),
+                closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
+        else:
+            paths[x] = Path.MakeMatrix(
+                roboPos(robots, x),
+                closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
     moves += [0, 0, 0, 0]
