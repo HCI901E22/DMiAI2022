@@ -58,18 +58,13 @@ def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
     boxes, scores, labels = model.predict(np.expand_dims(img, axis=0))
     count = 0
     for box, score, label in zip(boxes[0], scores[0], labels[0]):
-        print("here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(box)
-        print(score)
         # scores are sorted so we can break
         count = count + 1
         if score < 0.5:
             print("breaking after " + str(count))
             break
         b = BoundingBoxClassification(class_id=label, min_x=box[0]/img.shape[0], min_y=box[1]/img.shape[1], max_x=box[2]/img.shape[0], max_y=box[3]/img.shape[1], confidence=score)
-        print(b)
         result.append(b)
-    print(result)
     return result
 
 
