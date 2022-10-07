@@ -9,6 +9,9 @@ from models.dtos import PredictRequestDto, PredictResponseDto, BoundingBoxClassi
 from PIL import Image
 from io import BytesIO
 
+import os
+from keras-retinanet-main.keras_retinanet.models import load_model
+
 
 router = APIRouter()
 
@@ -37,6 +40,28 @@ def decode_request(request: PredictRequestDto) -> np.ndarray:
 
 def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
     logger.info(f'Recieved image: {img.shape}')
+    
+    import os
+    from keras_retinanet.models import load_model
+
+    # load retinanet model
+    result = []
+    model = load_model(r'C:\Users\lasse\DMiAI2022\pig-piglet-detection\snapshots\mymodel.h5', backbone_name = 'resnet101')
+    
+    boxes, scores, labels = model.predict(np.expand_dims(image, axis=0))
+    
+
+    for box, score, label in zip(boxes[0], scores[0], labels[0]):
+        # scores are sorted so we can break
+        count = count + 1
+        if score < 0.5:
+            break
+        b = BoundingBoxClassification(class_id = label, min_x = boxes[0], min_y = boxes[1], max_x = boxes[2], max_y = boxes[3], confidence = score)
+        result.append(b)
+    return result
+
+
+    
     bounding_boxes: List[BoundingBoxClassification] = []
     for _ in range(random.randint(0, 9)):
         bounding_box: BoundingBoxClassification = get_dummy_box()
