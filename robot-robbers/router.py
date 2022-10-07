@@ -21,11 +21,11 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
 
-    print(request.total_reward)
+    #print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
     for x in range(5):
-        if(request.game_ticks % 10 == 0):
+        if(request.game_ticks % 5 == 0):
             if (request.state[5][x][0] > 0):
                 paths[x] = Path.MakeMatrix(
                     roboPos(robots, x),
@@ -67,7 +67,7 @@ def closestDeposit(depos, robotPos, scrooges):
     dist = 100000
     pos = robotPos
     for x in depos:
-        if (math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
+        if (math.dist(robotPos, (x[0], x[1])) < dist and (checkScroogeNearby((x[0], x[1]), scrooges) or robotCloser(robotPos, (x[0], x[1]), scrooges))):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
     return pos
@@ -79,6 +79,11 @@ def checkScroogeNearby(item, scrooges):
             return False
     return True
 
+def robotCloser(robotPos, itemPos, scrooges):
+    for scrooge in scrooges:
+        if(math.dist(robotPos, itemPos) > math.dist((scrooge[0], scrooge[1]), itemPos)):
+            return False
+    return True
 
 def doMove(robotPos, path):
     move = []
