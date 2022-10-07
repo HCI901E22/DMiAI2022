@@ -8,6 +8,7 @@ import pickle
 router = APIRouter()
 
 file_name = "paths.pkl"
+paths = []
 
 @router.post('/predict', response_model=RobotRobbersPredictResponseDto)
 def predict(request: RobotRobbersPredictRequestDto):
@@ -21,13 +22,12 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
 
-    open_file = open(file_name, "rb")
-    paths = pickle.load(open_file)
-    open_file.close()
+    #open_file = open(file_name, "rb")
+    global paths
     #print(paths)
 
-    with open('logs/log.txt', 'a') as file:
-        file.write("paths: " + str(paths))
+    #with open('logs/log.txt', 'a') as file:
+    #    file.write("paths: " + str(paths))
     
     #print(request.total_reward)
     moves = []
@@ -48,10 +48,10 @@ def predict(request: RobotRobbersPredictRequestDto):
                     roboPos(robots, x),
                     closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
-    open(file_name, 'w').close()
-    open_file = open(file_name, "wb")
-    pickle.dump(paths, open_file)
-    open_file.close()
+    #open(file_name, 'w').close()
+    #open_file = open(file_name, "wb")
+    #pickle.dump(paths, open_file)
+    #open_file.close()
     #moves += [0, 0, 0, 0]
     return RobotRobbersPredictResponseDto(
         moves=moves
@@ -141,9 +141,10 @@ def doMove(robotPos, path):
 
 @router.get('/reset')
 def reset():
+    global paths
     paths = [[],[],[],[],[]]
-    open(file_name, 'w').close()
-    open_file = open(file_name, "wb")
-    pickle.dump(paths, open_file)
-    open_file.close()
+    #open(file_name, 'w').close()
+    #open_file = open(file_name, "wb")
+    #pickle.dump(paths, open_file)
+    #open_file.close()
 
