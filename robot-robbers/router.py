@@ -8,6 +8,7 @@ import math
 router = APIRouter()
 
 paths = [[],[],[],[],[]]
+carrierTarget = []
 
 @router.post('/predict', response_model=RobotRobbersPredictResponseDto)
 def predict(request: RobotRobbersPredictRequestDto):
@@ -26,7 +27,11 @@ def predict(request: RobotRobbersPredictRequestDto):
     # Make path towards cash and then deposit
     for x in range(5):
         if (request.state[5][x][0] > 0):
-            if(request.game_ticks % 2 == 0):
+            if(veryClosebag(cashbags, roboPos(robots, x), scrooges)[0] != 0 and request.state[5][x][0] < 2):
+                paths[x] = Path.MakeMatrix(
+                    roboPos(robots, x),
+                    closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
+            elif(request.game_ticks % 2 == 0):
                 paths[x] = Path.MakeMatrix(
                     roboPos(robots, x),
                     closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
@@ -34,7 +39,7 @@ def predict(request: RobotRobbersPredictRequestDto):
             if(request.game_ticks % 5 == 0):
                 paths[x] = Path.MakeMatrix(
                     roboPos(robots, x),
-                    closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
+                    closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
     #moves += [0, 0, 0, 0]
@@ -52,9 +57,20 @@ def ItemPos(idIndex, itemNum, state):
     return (state[idIndex][itemNum][0], state[idIndex][itemNum][1])
 
 
-def closestBag(bags, robotPos, scrooges):
+def closestBag(bags, robotPos, scrooges, state):
     dist = 100000
     pos = robotPos
+    for x in bags:
+        if (x[0] == -1):
+            continue
+        if (math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges) and checkCarrierNearby(robotPos, state[0], (x[0], x[1]), state)):
+            pos = (x[0], x[1])
+            dist = math.dist(robotPos, (x[0], x[1]))
+    return pos
+
+def veryClosebag(bags, robotPos, scrooges):
+    dist = 30
+    pos = (0,0)
     for x in bags:
         if (x[0] == -1):
             continue
@@ -63,6 +79,11 @@ def closestBag(bags, robotPos, scrooges):
             dist = math.dist(robotPos, (x[0], x[1]))
     return pos
 
+def checkCarrierNearby(robotPos, robots, bagPos, state):
+    for i in range(len(robots)):
+        if(math.dist(robotPos, bagPos) > math.dist((robots[i][0], robots[i][1]), bagPos) and state[5][i][0] > 0):
+            return False
+    return True
 
 def closestDeposit(depos, robotPos, scrooges):
     dist = 100000
