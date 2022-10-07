@@ -13,17 +13,17 @@ def MakeMatrix(fromTile, toTile, state):
     obstacles = [(x, y, w, h)
                  for (x, y, w, h) in state[4] if x >= 0 and y >= 0]
 
-    for cx in range(0, 127):
-        for cy in range(0, 127):
-            for x, y, w, h in obstacles:
-                if cx >= x and cx <= x + w and cy >= y and cy <= y + h:
-                    matrix[cy][cx] = 0
-
     for scrooge in state[1]:
         if(scrooge[0] < 112 and scrooge[1] < 112 and scrooge[1] > 16 and scrooge[0] > 16):
             for i in range(30):
                 for j in range(30):
                     matrix[scrooge[1]  - 15 + i][scrooge[0]  - 15 + j] = 5
+
+    for cx in range(0, 127):
+        for cy in range(0, 127):
+            for x, y, w, h in obstacles:
+                if cx >= x and cx <= x + w and cy >= y and cy <= y + h:
+                    matrix[cy][cx] = 0
 
     grid = Grid(matrix=matrix)
 
