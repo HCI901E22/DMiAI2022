@@ -21,16 +21,17 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
 
-    #print(request.total_reward)
+    print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
     for x in range(5):
-        if(request.game_ticks % 5 == 0):
-            if (request.state[5][x][0] > 0):
+        if (request.state[5][x][0] > 0):
+            if(request.game_ticks % 2 == 0):
                 paths[x] = Path.MakeMatrix(
                     roboPos(robots, x),
                     closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
-            else:
+        else:
+            if(request.game_ticks % 5 == 0):
                 paths[x] = Path.MakeMatrix(
                     roboPos(robots, x),
                     closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
