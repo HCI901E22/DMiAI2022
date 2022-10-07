@@ -7,6 +7,7 @@ import math
 
 router = APIRouter()
 
+paths = [[],[],[],[],[]]
 
 @router.post('/predict', response_model=RobotRobbersPredictResponseDto)
 def predict(request: RobotRobbersPredictRequestDto):
@@ -20,20 +21,21 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
 
-    print(request.total_reward)
+    print(paths)
 
     moves = []
     # Make path towards cash and then deposit
     for x in range(3):
-        if (request.state[5][x][0] > 0):
-            path = Path.MakeMatrix(
-                roboPos(robots, x),
-                closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
-        else:
-            path = Path.MakeMatrix(
-                roboPos(robots, x),
-                closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
-        moves += doMove((robots[x][0], robots[x][1]), path)
+        if(len(paths[x]) < 2 or checkScroogeNearby(roboPos(robots, x), scrooges)):
+            if (request.state[5][x][0] > 0):
+                paths[x] = Path.MakeMatrix(
+                    roboPos(robots, x),
+                    closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
+            else:
+                paths[x] = Path.MakeMatrix(
+                    roboPos(robots, x),
+                    closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
+        moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
     moves += [0, 0, 0, 0]
 
@@ -98,4 +100,6 @@ def doMove(robotPos, path):
         move += [1]
     elif (robotPos[1] == path[1][1]):
         move += [0]
+
+    del path[0]
     return move
