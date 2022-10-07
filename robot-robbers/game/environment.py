@@ -171,12 +171,10 @@ class RobotRobbersEnv(gym.Env):
         for i in range(self.n_robbers):
             self._robber_cooldown[i] -= 1
 
-        isDone = get_uptime().total_seconds() > 30
-
         return (
             self._get_observation(),
             episode_reward,
-            isDone,  # Never terminate
+            False,  # Never terminate
             {
                 "total_reward": self._total_reward,
                 "game_ticks": self._game_ticks
