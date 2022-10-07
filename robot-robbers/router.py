@@ -7,8 +7,6 @@ import math
 
 router = APIRouter()
 paths = [[],[],[],[],[]]
-carrierTarget = []
-
 
 @router.post('/predict', response_model=RobotRobbersPredictResponseDto)
 def predict(request: RobotRobbersPredictRequestDto):
@@ -22,10 +20,13 @@ def predict(request: RobotRobbersPredictRequestDto):
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
 
+    with open('logs/log.txt', 'a') as file:
+    file.write("paths: " + str(paths))
+    
     #print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
-    for x in range(3):
+    for x in range(5):
         if (request.state[5][x][0] > 0):
             if(veryClosebag(cashbags, roboPos(robots, x), scrooges)[0] != 0 and request.state[5][x][0] < 2):
                 paths[x] = Path.MakeMatrix(
@@ -43,9 +44,6 @@ def predict(request: RobotRobbersPredictRequestDto):
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
     moves += [0, 0, 0, 0]
-
-    with open('logs/log.txt', 'a') as file:
-        file.write("moves: " + str(moves) + " total_reward: " + str(request.total_reward) + "\n")
 
     return RobotRobbersPredictResponseDto(
         moves=moves
