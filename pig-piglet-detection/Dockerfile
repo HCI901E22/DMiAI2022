@@ -37,7 +37,7 @@ COPY requirements.txt requirements.txt
 RUN pip install --disable-pip-version-check -r requirements.txt
 RUN sudo apt install git -y
 RUN cd keras_retinanet_main && pip install -r requirements.txt --user && cd ..
-RUN cd keras_retinanet_main && python setup.py build_ext --inplace && cd ..
+RUN cd keras_retinanet_main && sudo python setup.py build_ext --inplace && cd ..
 
 
 
