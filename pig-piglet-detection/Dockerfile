@@ -35,7 +35,8 @@ ENV PATH="/home/pig-piglet-dete/.local/bin:$PATH"
 # Install Pip requirements
 COPY requirements.txt requirements.txt
 RUN pip install --disable-pip-version-check -r requirements.txt
-
+#RUN pip install keras-retinanet-main/requirements.txt --user
+#RUN python setup.py build_ext --inplace
 
 
 
