@@ -7,3 +7,6 @@ fastapi
 
 # ---- Added by the Emily CLI ----
 typing-extensions
+
+# ---- Added by the Emily CLI ----
+tensorflow
