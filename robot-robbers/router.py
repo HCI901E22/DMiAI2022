@@ -19,9 +19,11 @@ def predict(request: RobotRobbersPredictRequestDto):
     dropspots = [(x, y, w, h)
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
-        
+
+    print(request.total_reward)
+
     moves = []
-    #Make path towards cash and then deposit
+    # Make path towards cash and then deposit
     for x in range(3):
         if (request.state[5][x][0] > 0):
             path = Path.MakeMatrix(
@@ -33,53 +35,54 @@ def predict(request: RobotRobbersPredictRequestDto):
                 closestBag(cashbags, roboPos(robots, x), request.state[1]), request.state)
         moves += doMove((robots[x][0], robots[x][1]), path)
 
-    moves += [0,0,0,0]
-    
+    moves += [0, 0, 0, 0]
+
     return RobotRobbersPredictResponseDto(
         moves=moves
     )
 
+
 def roboPos(robots, robotNum):
     return (robots[robotNum][0], robots[robotNum][1])
+
 
 def ItemPos(idIndex, itemNum, state):
     return (state[idIndex][itemNum][0], state[idIndex][itemNum][1])
 
+
 def closestBag(bags, robotPos, scrooges):
     dist = 100000
-    pos = (0,0)
+    pos = robotPos
     for x in bags:
-        if(x[0] == -1):
+        if (x[0] == -1):
             continue
-        if(math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
+        if (math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
-        if(pos[0] == 0 and pos[1] == 0):
-            return robotPos
     return pos
+
 
 def closestDeposit(depos, robotPos, scrooges):
     dist = 100000
-    pos = (0,0)
+    pos = robotPos
     for x in depos:
-        if(math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
+        if (math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
-        if(pos[0] == 0 and pos[1] == 0):
-            return robotPos
     return pos
+
 
 def checkScroogeNearby(item, scrooges):
     for x in range(len(scrooges)):
-        if(math.dist(item, (scrooges[x][0], scrooges[x][1])) < 20):
+        if (math.dist(item, (scrooges[x][0], scrooges[x][1])) < 15):
             return False
-    return True    
-    
+    return True
+
 
 def doMove(robotPos, path):
     move = []
     #Movement in X
-    if(len(path) < 2):
+    if (len(path) < 2):
         return [0, 0]
     if (robotPos[0] > path[1][0]):
         move += [-1]
