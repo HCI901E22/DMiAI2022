@@ -21,7 +21,7 @@ def predict(request: RobotRobbersPredictRequestDto):
     obstacles = request.state[4]
 
     with open('logs/log.txt', 'a') as file:
-    file.write("paths: " + str(paths))
+        file.write("paths: " + str(paths))
     
     #print(request.total_reward)
     moves = []
