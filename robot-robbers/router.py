@@ -21,12 +21,12 @@ def predict(request: RobotRobbersPredictRequestDto):
     dropspots = [(x, y, w, h)
                  for (x, y, w, h) in request.state[3] if x >= 0 and y >= 0]
     obstacles = request.state[4]
-    with open('logs/log.txt', 'a') as file:
-        file.write(str(request.state) + "\n")
-    print(request.total_reward)
+    #with open('logs/log.txt', 'a') as file:
+    #    file.write(str(request.state) + "\n")
+    #print(request.total_reward)
     moves = []
     # Make path towards cash and then deposit
-    for x in range(5):
+    for x in range(3):
         if (request.state[5][x][0] > 0):
             if(veryClosebag(cashbags, roboPos(robots, x), scrooges)[0] != 0 and request.state[5][x][0] < 2):
                 paths[x] = Path.MakeMatrix(
@@ -43,7 +43,7 @@ def predict(request: RobotRobbersPredictRequestDto):
                     closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
         moves += doMove((robots[x][0], robots[x][1]), paths[x])
 
-    #moves += [0, 0, 0, 0]
+    moves += [0, 0, 0, 0]
 
     return RobotRobbersPredictResponseDto(
         moves=moves

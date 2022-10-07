@@ -18,7 +18,7 @@ def MakeMatrix(fromTile, toTile, state):
                 for j in range(30):
                     if(scrooge[1] - 15 + i > 0 and scrooge[1] - 15 + i < 128 and scrooge[0] - 15 + j > 0 and scrooge[0]  - 15 + j < 128):
                         matrix[scrooge[1]  - 15 + i][scrooge[0]  - 15 + j] = 5
-
+    
     for cx in range(0, 127):
         for cy in range(0, 127):
             for x, y, w, h in obstacles:
