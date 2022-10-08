@@ -33,7 +33,7 @@ def load_model(request: Request):
     import os
     from keras_retinanet_main.keras_retinanet.models import load_model
     global model
-    model = load_model('snapshots/mymodelv02.h5', backbone_name = 'resnet101')
+    model = load_model('snapshots/mymodelv03.h5', backbone_name = 'resnet101')
     return "Model loded"
 
 
