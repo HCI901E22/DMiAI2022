@@ -1,9 +1,12 @@
 from game.environment import RobotRobbersEnv
-from models.dtos import RobotRobbersPredictRequestDto
+from models.dtos import RobotRobbersPredictRequestDto, RobotRobbersPredictResponseDto
 import router
+import random
+import requests
+import json
 
 env = RobotRobbersEnv()
-env.reset(42)
+env.reset(random.randint(0, 10000))
 env.render()
 sample = env.observation_space.sample()
 
@@ -20,6 +23,9 @@ while True:
         firstRun = False
     else:
         moveDTO = router.predict(predictDTO)
+        #js = {'state': predictDTO.state, 'reward': predictDTO.reward, 'is_terminal': predictDTO.is_terminal, 'total_reward': predictDTO.total_reward, 'game_ticks': predictDTO.game_ticks}
+        #responce = json.loads(requests.post("http://kurtskammerater.westeurope.cloudapp.azure.com:4343/predict", json=js).text)
+        #moveDTO = RobotRobbersPredictResponseDto(moves=responce['moves'])
         state, reward, is_done, info = env.step(moveDTO.moves)
     predict_data = {
         'state': state.tolist(),
