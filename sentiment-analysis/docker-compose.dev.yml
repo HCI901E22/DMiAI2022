@@ -1,0 +1,7 @@
+
+version: "3"
+services:
+  emily-sentiment-analysis-jyd0wa:
+    volumes:
+      - ../../:/workspace:cached
+
