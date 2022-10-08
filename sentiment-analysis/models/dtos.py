@@ -21,3 +21,7 @@ class TrainResponse(BaseModel):
     train_accuracy: float
     test_loss: float
     test_accuracy: float
+
+
+class LoadRequest(BaseModel):
+    path: str

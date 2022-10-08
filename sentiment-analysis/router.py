@@ -2,7 +2,7 @@ import random
 from fastapi import APIRouter
 from Model import Model
 from Trainer import Trainer
-from models.dtos import SentimentAnalysisRequestDto, SentimentAnalysisResponseDto, TrainRequest, TrainResponse
+from models.dtos import SentimentAnalysisRequestDto, SentimentAnalysisResponseDto, TrainRequest, TrainResponse, LoadRequest
 
 router = APIRouter()
 
@@ -30,3 +30,10 @@ def train(request: TrainRequest) -> TrainResponse:
     model.save_model(request.save_path)
     return TrainResponse(train_loss=result['train_loss'], train_accuracy=result['train_accuracy'],
                          test_loss=result['test_loss'], test_accuracy=result['test_accuracy'])
+
+@router.post('load')
+def load(request: LoadRequest):
+    global model
+    model = Model()
+    model.load_model(request.path)
+    return "Model loaded"
