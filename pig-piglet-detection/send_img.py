@@ -3,9 +3,9 @@ import base64
 from PIL import Image
 from io import BytesIO
 import random
-url = 'http://localhost:4545/predict'
+url = 'http://kurtskammerater.westeurope.cloudapp.azure.com:4545/predict'
 
-img = "pig-piglet-detection/eval-images/image25.png"
+img = "eval-images/image118.png"
 
 myobj = {}
 with open(img, "rb") as img_file:
@@ -18,4 +18,4 @@ with open(img, "rb") as img_file:
 x = requests.post(url, json=myobj)
 x.raise_for_status()
 
-print(x.json.__dict__)
+print(x.text)
