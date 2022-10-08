@@ -305,6 +305,21 @@ class RobotRobbersEnv(gym.Env):
 
         return observation
 
+    def setState(self, state):
+        robbers = state[0, ::, 0:2]
+        self._robber_positions = robbers
+        scrooges = state[1, ::, 0:2]
+        self._scrooge_positions = scrooges
+        cashbags = state[2, ::, 0:2]
+        self._cashbag_positions = cashbags
+        dropspots = state[3, ::, 0:2]
+        self._dropspot_positions = dropspots
+        obstacles = np.asarray(state[4])
+        self._obstacles = obstacles
+        cashbagcasrriers = state[5, ::, 0]
+        self._cashbag_carriers = cashbagcasrriers
+
+
     def _render_obstacle(self, idx):
         x, y, w, h = self._obstacles[idx]
         gx = x * self.scaling

@@ -4,9 +4,14 @@ import router
 import random
 import requests
 import json
+import numpy as np
 
 env = RobotRobbersEnv()
-env.reset(random.randint(0, 10000))
+r = random.randint(0, 10000)
+print("Seed = " + str(r))
+env.reset(r)
+#with open("logs/log.txt") as file:
+#    env.setState(np.asarray(json.loads(file.readline())))
 env.render()
 sample = env.observation_space.sample()
 
