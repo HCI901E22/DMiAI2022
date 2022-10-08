@@ -31,7 +31,7 @@ def train(request: TrainRequest) -> TrainResponse:
     return TrainResponse(train_loss=result['train_loss'], train_accuracy=result['train_accuracy'],
                          test_loss=result['test_loss'], test_accuracy=result['test_accuracy'])
 
-@router.post('load')
+@router.post('/load')
 def load(request: LoadRequest):
     global model
     model = Model()
