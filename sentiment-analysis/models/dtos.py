@@ -13,6 +13,7 @@ class SentimentAnalysisResponseDto(BaseModel):
 class TrainRequest(BaseModel):
     data_path: str
     save_path: str
+    model_path: str | None = None
 
 
 class TrainResponse(BaseModel):
