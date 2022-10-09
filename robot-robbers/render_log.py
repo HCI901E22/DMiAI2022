@@ -29,6 +29,6 @@ for state in file.readlines():
     state = np.asarray(json.loads(state))
     env.setState(state)
     env.render()
-    time.sleep(0.1)
+    time.sleep(0.01)
 
 file.close()
