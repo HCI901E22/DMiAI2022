@@ -35,21 +35,25 @@ def predict(request: RobotRobbersPredictRequestDto):
     with open('logs/log.txt', 'a') as file:
         file.write(str(request.state) + '\n')
     global compute_dodge_path
-    if (compute_dodge_path and len(dropspots) == 3) or request.game_ticks % 25 == 0:
+    if (compute_dodge_path and len(dropspots) == 3) or request.game_ticks % 20 == 0:
         decide_corner(dropspots, cashbags)
         compute_dodge_path = False
 
     global dodge_corner
 
     # print(request.total_reward)
+    global trap_corner
     moves = []
-    if all_scrooges_close(scrooges, [robots[0], robots[1]]):
-        global trap_corner
+    if all_scrooges_close(scrooges[0:4], [robots[0]]):
+
         moves += move_towards(robots[0], trap_corner, obstacles)
+    else:
+        moves += distract_scrooges(robots, scrooges[0:4], 0, obstacles)
+
+    if all_scrooges_close(scrooges[4::], [robots[1]]):
         moves += move_towards(robots[1], trap_corner, obstacles)
     else:
-        moves += distract_scrooges(robots, scrooges, 0, obstacles)
-        moves += distract_scrooges(robots, scrooges, 1, obstacles)
+        moves += distract_scrooges(robots, scrooges[4::], 1, obstacles)
 
     if scrooges_trapped(scrooges):
         # Make path towards cash and then deposit
@@ -106,7 +110,7 @@ def predict(request: RobotRobbersPredictRequestDto):
 
 
 def distract_scrooges(robots, scrooges, robot_idx, obstacles):
-    ### Find scrooge furthest from trap
+    ### Find scrooge closest to robot
     closest_scrooge = -1
     min_dist = 512
     robot = robots[robot_idx]
@@ -128,7 +132,7 @@ def all_scrooges_close(scrooges, robots):
     for s in scrooges:
         trapped = False
         for robot in robots:
-            trapped |= math.dist(robot, s) < 12
+            trapped |= math.dist(robot, s) < 10
         result &= trapped
     return result
 
@@ -165,7 +169,7 @@ def move_towards(robot, destination, obstacles):
         x = -1 if destination[0] < robot[0] else 1 if destination[0] > robot[0] else 0
         y = -1 if destination[1] < robot[1] else 1 if destination[1] > robot[1] else 0
         for (ox, oy, w, h) in obstacles:
-            if (robot[0] + x == ox or robot[0] + x == ox + w) and oy <= robot[1] + y <= oy + h:
+            if (robot[0] + x == ox or robot[0] + x == ox + w + 1) and oy <= robot[1] + y <= oy + h:
                 # x = random.choice([0,1]) if x == -1 else random.choice([0,-1])
                 # y = random.choice([1,-1]) if y == 0 else y
                 x = 0
@@ -174,7 +178,7 @@ def move_towards(robot, destination, obstacles):
                 top_dist = abs(top - destination[1])
                 bottom_dist = abs(bottom - destination[1])
                 y = -1 if top_dist < bottom_dist else 1
-            elif ox <= robot[0] + x <= ox + w and (oy == robot[1] + y or robot[1] + y == oy + w):
+            elif ox <= robot[0] + x <= ox + w and (oy == robot[1] + y or robot[1] + y == oy + w+1):
                 y = random.choice([0, 1]) if y == -1 else random.choice([0, -1])
                 x = random.choice([1, -1]) if x == 0 else x
                 y = 0
