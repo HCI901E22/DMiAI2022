@@ -44,31 +44,28 @@ def predict(request: RobotRobbersPredictRequestDto):
     # print(request.total_reward)
     global trap_corner
     moves = []
-    if all_scrooges_close(scrooges[0:4], [robots[0]]):
-
-        moves += move_towards(robots[0], trap_corner, obstacles)
+    if all_scrooges_close(scrooges, [robots[0], robots[1], robots[2]]):
+        for i in range(3):
+            moves += move_towards(robots[i], trap_corner, obstacles, scrooges)
     else:
-        moves += distract_scrooges(robots, scrooges[0:4], 0, obstacles)
+        for i in range(3):
+            moves += distract_scrooges(robots, scrooges, i, obstacles)
 
-    if all_scrooges_close(scrooges[4::], [robots[1]]):
-        moves += move_towards(robots[1], trap_corner, obstacles)
-    else:
-        moves += distract_scrooges(robots, scrooges[4::], 1, obstacles)
 
     if scrooges_trapped(scrooges):
         # Make path towards cash and then deposit
-        for x in range(2, 5):
+        for x in range(3, 5):
             if request.state[5][x][0] > 0:
-                if veryClosebag(cashbags, roboPos(robots, x), scrooges)[0] != 0 and request.state[5][x][0] < 3:
+                if veryClosebag(cashbags, roboPos(robots, x), scrooges, request.state)[0] != 0 and request.state[5][x][0] < 3:
                     moves += move_towards(robots[x], closestBag(cashbags, roboPos(robots, x), request.state[1],
-                                                                request.state), obstacles)
+                                                                request.state), obstacles, scrooges)
 
                 else:
                     moves += move_towards(robots[x], closestDeposit(dropspots, roboPos(robots, x), request.state[1]),
-                                          obstacles)
+                                          obstacles, scrooges)
             else:
                 moves += move_towards(robots[x], closestBag(cashbags, roboPos(robots, x), request.state[1],
-                                                            request.state), obstacles)
+                                                            request.state), obstacles, scrooges)
             #moves += doMove((robots[x][0], robots[x][1]), paths[x])
     # open(file_name, 'w').close()
     # open_file = open(file_name, "wb")
@@ -76,8 +73,8 @@ def predict(request: RobotRobbersPredictRequestDto):
     # open_file.close()
     # moves += [0, 0, 0, 0]
     else:
-        for i in range(2, 5):
-            moves += move_towards(robots[i], dodge_corner, obstacles)
+        for i in range(3, 5):
+            moves += move_towards(robots[i], dodge_corner, obstacles, scrooges)
 
     # for i in range(5):
     #    moves += doMove(robots[i], paths[i])
@@ -119,12 +116,12 @@ def distract_scrooges(robots, scrooges, robot_idx, obstacles):
         global trap_corner
         min_dist = min(min_dist, math.dist(trap_corner, scrooge))
         robo_dist = math.dist(robot, scrooge)
-        if old_dist > min_dist and robo_dist > 12:
+        if old_dist > min_dist and robo_dist > 14:
             closest_scrooge = i
         else:
             min_dist = old_dist
     scrooge = scrooges[closest_scrooge]
-    return move_towards(robot, scrooge, obstacles)
+    return move_towards(robot, scrooge, obstacles, scrooges)
 
 
 def all_scrooges_close(scrooges, robots):
@@ -132,7 +129,7 @@ def all_scrooges_close(scrooges, robots):
     for s in scrooges:
         trapped = False
         for robot in robots:
-            trapped |= math.dist(robot, s) < 10
+            trapped |= math.dist(robot, s) < 14
         result &= trapped
     return result
 
@@ -160,33 +157,58 @@ def decide_corner(dropspots, cashbags):
     dodge_corner = corners[3]
 
 
-def move_towards(robot, destination, obstacles):
+def move_towards(robot, destination, obstacles, stooges):
     r = random.random()
-    if r < 0.05:
-        x = random.choice([-1,0,1])
-        y = random.choice([-1,0,1])
-    else:
-        x = -1 if destination[0] < robot[0] else 1 if destination[0] > robot[0] else 0
-        y = -1 if destination[1] < robot[1] else 1 if destination[1] > robot[1] else 0
-        for (ox, oy, w, h) in obstacles:
-            if (robot[0] + x == ox or robot[0] + x == ox + w + 1) and oy <= robot[1] + y <= oy + h:
-                # x = random.choice([0,1]) if x == -1 else random.choice([0,-1])
-                # y = random.choice([1,-1]) if y == 0 else y
-                x = 0
-                top = oy
-                bottom = oy + h
-                top_dist = abs(top - destination[1])
-                bottom_dist = abs(bottom - destination[1])
-                y = -1 if top_dist < bottom_dist else 1
-            elif ox <= robot[0] + x <= ox + w and (oy == robot[1] + y or robot[1] + y == oy + w+1):
-                y = random.choice([0, 1]) if y == -1 else random.choice([0, -1])
-                x = random.choice([1, -1]) if x == 0 else x
+
+    x = -1 if destination[0] < robot[0] else 1 if destination[0] > robot[0] else 0
+    y = -1 if destination[1] < robot[1] else 1 if destination[1] > robot[1] else 0
+    for (ox, oy, w, h) in obstacles:
+
+        if ox < robot[0] < (ox + w) and oy < robot[y] < (oy + h):
+            x = random.choice([-1, 1])
+            y = random.choice([1, -1])
+        elif (robot[0] + x == ox or robot[0] + x == ox + w) and (oy == robot[1] + y or robot[1] + y == oy + h):
+            corners = [(ox-1, oy-1), (ox-1, oy+h +1), (ox +w +w, oy -1), (ox + w + 1, oy + h + 1)]
+            if ox <= robot[0] <= ox + w:
                 y = 0
+            elif oy <= robot[1] <= oy + w:
+                x = 0
+            elif robot in corners:
+                if ox <= destination[0] <= ox + w:
+                    x = 0
+                elif oy <= destination[1] <= oy + h:
+                    y = 0
+                else:
+                    x = random.choice([-1, 1])
+                    y = random.choice([1, -1])
+            elif ox <= destination[0] <= ox + w:
+                y = 0
+                if x == 0:
+                    left = ox
+                    right = ox + w
+                    x = 1 if abs(destination[1] - right) < abs(destination[1] - left) else -1
+            elif oy <= destination[1] <= oy + h:
+                x = 0
+                if y == 0:
+                    top = oy
+                    bottom = oy + h
+                    y = 1 if abs(destination[1] - bottom) < abs(destination[1] - top) else -1
+            elif h < w:
+                x = 0
+            else:
+                y = 0
+        elif (robot[0] + x == ox or robot[0] + x == ox + w) and oy <= robot[1] + y <= oy + h:
+            x = 0
+            if oy <= destination[1] <= oy + h:
+                top = oy
+                bottom = oy+h
+                y = 1 if abs(destination[1] - bottom) < abs(destination[1] - top) else -1
+        elif ox <= robot[0] + x <= ox + w and (oy == robot[1] + y or robot[1] + y == oy + h):
+            y = 0
+            if ox <= destination[0] <= ox + w:
                 left = ox
                 right = ox + w
-                left_dist = abs(left - destination[0])
-                right_dist = abs(right - destination[0])
-                x = -1 if left_dist < right_dist else 1
+                x = 1 if abs(destination[1] - right) < abs(destination[1] - left) else -1
     return [x, y]
 
 
@@ -194,7 +216,7 @@ def scrooges_trapped(scrooges):
     result = True
     for s in scrooges:
         global trap_corner
-        result &= math.dist(s, trap_corner) < 36
+        result &= math.dist(s, trap_corner) < 64
     return result
 
 
@@ -219,13 +241,13 @@ def closestBag(bags, robotPos, scrooges, state):
     return pos
 
 
-def veryClosebag(bags, robotPos, scrooges):
+def veryClosebag(bags, robotPos, scrooges, state):
     dist = 64
     pos = (0, 0)
     for x in bags:
         if (x[0] == -1):
             continue
-        if (math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges)):
+        if math.dist(robotPos, (x[0], x[1])) < dist and checkScroogeNearby((x[0], x[1]), scrooges) and checkCarrierNearby(robotPos, state[0], (x[0], x[1]), state):
             pos = (x[0], x[1])
             dist = math.dist(robotPos, (x[0], x[1]))
     return pos
@@ -251,7 +273,7 @@ def closestDeposit(depos, robotPos, scrooges):
 
 def checkScroogeNearby(item, scrooges):
     for x in range(len(scrooges)):
-        if (math.dist(item, (scrooges[x][0], scrooges[x][1])) <= 15):
+        if (math.dist(item, (scrooges[x][0], scrooges[x][1])) < 15):
             return False
     return True
 
