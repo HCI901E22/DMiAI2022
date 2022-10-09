@@ -12,7 +12,7 @@ env.reset(random.randint(0, 10000))
 env.render()
 sample = env.observation_space.sample()
 
-router.reset()
+#router.reset()
 
 # My variables
 moveStart = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
