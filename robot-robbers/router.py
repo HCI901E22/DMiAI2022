@@ -32,8 +32,8 @@ def predict(request: RobotRobbersPredictRequestDto):
     global paths
     # print(paths)
 
-    #with open('logs/log.txt', 'a') as file:
-    #    file.write(str(request.state) + '\n')
+    with open('logs/log.txt', 'a') as file:
+        file.write(str(request.state) + '\n')
     global compute_dodge_path
     if compute_dodge_path:
         decide_corner(dropspots)
@@ -59,10 +59,11 @@ def predict(request: RobotRobbersPredictRequestDto):
                     paths[x] = Path.MakeMatrix(
                         roboPos(robots, x),
                         closestBag(cashbags, roboPos(robots, x), request.state[1], request.state), request.state)
-                elif (request.game_ticks % 10 == 0):
-                    paths[x] = Path.MakeMatrix(
-                        roboPos(robots, x),
-                        closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
+                else:
+                    if request.game_ticks % 10 == 0:
+                        paths[x] = Path.MakeMatrix(
+                            roboPos(robots, x),
+                            closestDeposit(dropspots, roboPos(robots, x), request.state[1]), request.state)
             else:
                 if (request.game_ticks % 15 == 0):
                     paths[x] = Path.MakeMatrix(
@@ -181,7 +182,7 @@ def move_towards(robot, destination, obstacles):
     x = -1 if destination[0] < robot[0] else 1 if destination[0] > robot[0] else 0
     y = -1 if destination[1] < robot[1] else 1 if destination[1] > robot[1] else 0
     for (ox, oy, w, h) in obstacles:
-        if robot[0] + x == ox and oy <= robot[1] + y <= oy + h:
+        if (robot[0] + x == ox or robot[0] + x == ox + w) and oy <= robot[1] + y <= oy + h:
             #x = random.choice([0,1]) if x == -1 else random.choice([0,-1])
             #y = random.choice([1,-1]) if y == 0 else y
             x = 0
@@ -190,7 +191,7 @@ def move_towards(robot, destination, obstacles):
             top_dist = abs(top - destination[1])
             bottom_dist = abs(bottom - destination[1])
             y = -1 if top_dist < bottom_dist else 1
-        elif ox <= robot[0] + x <= ox + w and oy == robot[1] + y:
+        elif ox <= robot[0] + x <= ox + w and (oy == robot[1] + y or robot[1] + y == oy + w):
             y = random.choice([0, 1]) if y == -1 else random.choice([0, -1])
             x = random.choice([1, -1]) if x == 0 else x
             y = 0
@@ -235,7 +236,7 @@ def closestBag(bags, robotPos, scrooges, state):
 
 
 def veryClosebag(bags, robotPos, scrooges):
-    dist = 30
+    dist = 64
     pos = (0, 0)
     for x in bags:
         if (x[0] == -1):

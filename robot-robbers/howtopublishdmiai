@@ -1,0 +1,37 @@
+
+#####
+Jeg håber at du forstår at <example> betyder at du selv skal fylde noget ind og <example | example2> betyder at det er mulighederne du har :)
+
+### Step 1 - Login på serveren:
+
+
+ssh dmiaisrv@kurtskammerater.westeurope.cloudapp.azure.com
+
+#Password er SW22hci01srv!
+
+### Step 2 - Find den rigtige mappe og branch:
+
+cd DMiAI2022
+
+git pull
+
+git branch --list
+
+# hvis du ikke er på den rigtige branch så
+
+git checkout <branch-name>
+
+### Step 3 - Fjern den eksisterende docker container:
+
+sudo docker kill <pigs | robots | sentiment> && sudo docker rm <pigs | robots | sentiment>
+
+### Step 4 - Byg det nye docker image:
+
+sudo docker build -t <pigs | robots | sentiment> <pig-piglet-detection | sentiment-analysis | robot-robbers>
+
+### Step 5 - Kør dit nye docker image:
+
+# Når du skal vælge port er mappingen: {pigs = 4545, robots = 4343, sentiment = 4242}
+
+sudo docker run --env-file <robot-robbers | pig-piglet-detection | sentiment-analysis>/environments/dev/.emily.env -p <4242:4242 | 4343:4343 | 4545:4545> -d --name <robots | pigs | sentiment> <robots | pigs | sentiment>
+
