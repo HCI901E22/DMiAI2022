@@ -31,12 +31,10 @@ class Model(Sequential):
         return sample
 
     def forward(self, sample):
-        sid = SentimentIntensityAnalyzer()
-        vader = [sid.polarity_scores(s)['compound'] for s in sample]
-        vader = [((s * 5) + 5) / 2 for s in vader]
+
         sample = self._preprocess_data(sample)
         result = self.predict(sample)
-        result = [(v[0] * 0.2 + v[1] * 0.8) for v in zip(vader, result)]
+        #result = [(v[0] * 0.2 + v[1] * 0.8) for v in zip(vader, result)]
         return self._postprocess_data(result)
 
     def _preprocess_data(self, data):
