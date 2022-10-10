@@ -36,7 +36,7 @@ def predict(request: RobotRobbersPredictRequestDto):
     with open('logs/log.txt', 'a') as file:
         file.write(str(request.state) + '\n')
     global compute_dodge_path
-    if (compute_dodge_path and len(dropspots) == 3) or request.game_ticks % 20 == 0:
+    if (compute_dodge_path and len(dropspots) == 3):
         decide_corner(dropspots, cashbags)
         compute_dodge_path = False
 
@@ -46,7 +46,7 @@ def predict(request: RobotRobbersPredictRequestDto):
     global trap_corner
     moves = []
     trapped = scrooges_trapped(scrooges)
-    n_distractors = 2 if trapped else 3
+    n_distractors = 3
     if all_scrooges_close(scrooges, robots[0:n_distractors]):
         for i in range(n_distractors):
             moves += move_towards(robots[i], trap_corner, padded_obstacles, cashbags, False)
@@ -146,8 +146,8 @@ def decide_corner(dropspots, cashbags):
             best = min(best, d)
         bags = 0
         for c in cashbags:
-            if math.dist(cor, c) < 64:
-                bags += 0
+            if math.dist(cor, c) < 32:
+                bags += 1
         if bags > 0:
             best /= bags * bags
         return best
@@ -241,7 +241,7 @@ def scrooges_trapped(scrooges):
     result = True
     for s in scrooges:
         global trap_corner
-        result &= math.dist(s, trap_corner) < 64
+        result &= math.dist(s, trap_corner) < 42
     return result
 
 
