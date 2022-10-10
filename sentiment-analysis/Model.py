@@ -43,7 +43,7 @@ class Model(Sequential):
         x = data
         data = self.vectorizer.transform(data)
         sa = SentimentIntensityAnalyzer()
-        ext = np.asarray([sa.polarity_scores(x)['compound'] for x in data])
+        ext = np.asarray([sa.polarity_scores(y)['compound'] for y in x])
         data = sparse.hstack((data, ext[:, None])).A
         return data
 
