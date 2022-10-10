@@ -1,3 +1,5 @@
+import numpy as np
+from scipy import sparse
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
 import pickle
@@ -38,7 +40,11 @@ class Model(Sequential):
         return self._postprocess_data(result)
 
     def _preprocess_data(self, data):
+        x = data
         data = self.vectorizer.transform(data)
+        sa = SentimentIntensityAnalyzer()
+        ext = np.asarray([sa.polarity_scores(x)['compound'] for x in data])
+        data = sparse.hstack((data, ext[:, None])).A
         return data
 
     def save_model(self, save_path):
