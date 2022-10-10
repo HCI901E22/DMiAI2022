@@ -58,7 +58,7 @@ def predict(request: RobotRobbersPredictRequestDto):
         # Make path towards cash and then deposit
         for x in range(n_distractors, 5):
             if request.state[5][x][0] > 0:
-                if veryClosebag(cashbags, roboPos(robots, x), scrooges, request.state) and request.state[5][x][0] < 3:
+                if veryClosebag(cashbags, roboPos(robots, x), scrooges, request.state, request.state[5][x][0]) and request.state[5][x][0] < 5:
                     moves += move_towards(robots[x], closestBag(cashbags, roboPos(robots, x), request.state[1],
                                                                 request.state), obstacles, scrooges)
 
@@ -224,12 +224,16 @@ def move_towards(robot, destination, obstacles, money_bags, take_money=True):
                 left = ox
                 right = ox + w
                 x = 1 if abs(destination[1] - right) < abs(destination[1] - left) else -1
+    moves = [-1, 0, 1]
     if not take_money:
         for bag in money_bags:
-            moves = [-1, 0, 1]
+
             if (x, y) == bag:
                 x = random.choice([c for c in moves if c != x])
                 y = random.choice([c for c in moves if c != y])
+    if x == 0 and y == 0:
+        x = random.choice(moves)
+        y = random.choice(moves)
     return [x, y]
 
 
@@ -262,8 +266,10 @@ def closestBag(bags, robotPos, scrooges, state):
     return pos
 
 
-def veryClosebag(bags, robotPos, scrooges, state):
+def veryClosebag(bags, robotPos, scrooges, state, r_bags):
     dist = 64
+    if r_bags >= 3:
+        dist = 32
     for x in bags:
         if (x[0] == -1):
             continue
@@ -278,7 +284,7 @@ def checkCarrierNearby(robotPos, robots, bagPos, state):
         mydist = math.dist(robotPos, bagPos)
         theirdist = math.dist((robots[i][0], robots[i][1]), bagPos)
         if (mydist > theirdist and theirdist < 64 and state[5][i][0] > 0 and
-                state[5][i][0] < 3):
+                state[5][i][0] < 5):
             return False
     return True
 
@@ -296,6 +302,8 @@ def closestDeposit(depos, robotPos, scrooges):
 
 def checkScroogeNearby(item, scrooges):
     for x in range(len(scrooges)):
+        if scrooges[x][0] < 0 or scrooges[x][1] < 0:
+            continue
         if (math.dist(item, (scrooges[x][0], scrooges[x][1])) < 15):
             return False
     return True
