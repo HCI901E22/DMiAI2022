@@ -9,6 +9,7 @@ import numpy as np
 env = RobotRobbersEnv()
 r = random.randint(0, 10000)
 print("Seed = " + str(r))
+### FIZ 1822
 env.reset(r)
 #with open("logs/log.txt") as file:
 #    env.setState(np.asarray(json.loads(file.readline())))
