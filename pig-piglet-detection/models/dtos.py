@@ -38,3 +38,7 @@ class PredictRequestDto(BaseModel):
 
 class PredictResponseDto(BaseModel):
     boxes: List[BoundingBoxClassification]
+
+
+class LoadRequest(BaseModel):
+    path: str

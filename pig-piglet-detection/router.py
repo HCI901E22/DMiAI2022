@@ -5,7 +5,7 @@ import numpy as np
 from typing import List
 from loguru import logger
 from fastapi import APIRouter, Request
-from models.dtos import PredictRequestDto, PredictResponseDto, BoundingBoxClassification
+from models.dtos import PredictRequestDto, PredictResponseDto, BoundingBoxClassification, LoadRequest
 from PIL import Image
 from io import BytesIO
 
@@ -28,12 +28,11 @@ def predict_endpoint(request: PredictRequestDto):
 
     return response
 
-@router.get('/load')
-def load_model(request: Request):
-    import os
+@router.post('/load')
+def load_model(request: LoadRequest):
     from keras_retinanet_main.keras_retinanet.models import load_model
     global model
-    model = load_model('snapshots/mymodelv03.h5', backbone_name = 'resnet101')
+    model = load_model(request.path, backbone_name = 'resnet101')
     return "Model loded"
 
 
