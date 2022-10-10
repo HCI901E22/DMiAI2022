@@ -63,7 +63,7 @@ def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
         if score < 0.25:
             print("breaking after " + str(count))
             break
-        score = 1.0
+        #score = 1.0
         b = BoundingBoxClassification(class_id=(label+1)%2, min_x=box[0]/img.shape[1], min_y=box[1]/img.shape[0], max_x=box[2]/img.shape[1], max_y=box[3]/img.shape[0], confidence=score)
         result.append(b)
     return result
