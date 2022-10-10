@@ -1,3 +1,5 @@
+import time
+
 from game.environment import RobotRobbersEnv
 from models.dtos import RobotRobbersPredictRequestDto, RobotRobbersPredictResponseDto
 import router
@@ -40,8 +42,11 @@ while True:
         'total_reward': info['total_reward'],
         'game_ticks': info['game_ticks']
     }
-
+    if info['game_ticks'] % 100 == 0:
+        print(info['game_ticks'])
+        print(info['total_reward'])
     predictDTO = RobotRobbersPredictRequestDto(**predict_data)
+
 
     # If you want to render the game as it runs, it's recommended to
     # run this script locally:
@@ -53,4 +58,4 @@ while True:
     # python run_game.py
     # ```
     #
-    env.render()
+    #env.render()
