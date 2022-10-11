@@ -32,7 +32,7 @@ def predict_endpoint(request: PredictRequestDto):
 def load_model(request: LoadRequest):
     from keras_retinanet_main.keras_retinanet.models import load_model
     global model
-    model = load_model(request.path, backbone_name = 'resnet101')
+    model = load_model(request.path)
     return "Model loded"
 
 
