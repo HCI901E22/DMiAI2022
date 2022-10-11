@@ -51,7 +51,7 @@ def predict(request: RobotRobbersPredictRequestDto):
         decide_corner(dropspots, cashbags, robots[0])
         global trap_corner
         for i in range(n_distractors):
-            moves += move_towards(robots[i], trap_corner, padded_obstacles, cashbags, False)
+            moves += move_towards(robots[i], trap_corner, padded_obstacles, cashbags)
     else:
         for i in range(n_distractors):
             moves += distract_scrooges(robots, scrooges, i, padded_obstacles, cashbags)
