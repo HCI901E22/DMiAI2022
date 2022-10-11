@@ -42,5 +42,6 @@ RUN pip install --disable-pip-version-check -r requirements.txt
 
 # Copy all directory contents (sans .dockerignore) into container
 COPY . .
+RUN sed -i 's/\r$//' run.sh
 
 CMD ["/bin/bash", "run.sh"]
