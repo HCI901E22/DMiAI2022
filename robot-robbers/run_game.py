@@ -30,10 +30,10 @@ while True:
         state, reward, is_done, info = env.step(moveStart)
         firstRun = False
     else:
-        moveDTO = router.predict(predictDTO)
-        #js = {'state': predictDTO.state, 'reward': predictDTO.reward, 'is_terminal': predictDTO.is_terminal, 'total_reward': predictDTO.total_reward, 'game_ticks': predictDTO.game_ticks}
-        #responce = json.loads(requests.post("http://kurtskammerater.westeurope.cloudapp.azure.com:4343/predict", json=js).text)
-        #moveDTO = RobotRobbersPredictResponseDto(moves=responce['moves'])
+        #moveDTO = router.predict(predictDTO)
+        js = {'state': predictDTO.state, 'reward': predictDTO.reward, 'is_terminal': predictDTO.is_terminal, 'total_reward': predictDTO.total_reward, 'game_ticks': predictDTO.game_ticks}
+        responce = json.loads(requests.post("http://localhost:4343/predict", json=js).text)
+        moveDTO = RobotRobbersPredictResponseDto(moves=responce['moves'])
         state, reward, is_done, info = env.step(moveDTO.moves)
     predict_data = {
         'state': state.tolist(),
@@ -42,9 +42,6 @@ while True:
         'total_reward': info['total_reward'],
         'game_ticks': info['game_ticks']
     }
-    if info['game_ticks'] % 100 == 0:
-        print(info['game_ticks'])
-        print(info['total_reward'])
     predictDTO = RobotRobbersPredictRequestDto(**predict_data)
 
 
@@ -58,4 +55,4 @@ while True:
     # python run_game.py
     # ```
     #
-    #env.render()
+    env.render()

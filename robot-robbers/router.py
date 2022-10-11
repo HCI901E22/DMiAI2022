@@ -33,8 +33,8 @@ def predict(request: RobotRobbersPredictRequestDto):
     global paths
     # print(paths)
 
-    with open('logs/log.txt', 'a') as file:
-        file.write(str(request.state) + '\n')
+    #with open('logs/log.txt', 'a') as file:
+    #    file.write(str(request.state) + '\n')
     global compute_dodge_path
     if (compute_dodge_path and len(dropspots) == 3):
         decide_corner(dropspots, cashbags, robots[0])
@@ -360,7 +360,7 @@ def reset():
     trap_corner = (0, 0)
     global dodge_corner
     dodge_corner = (127, 127)
-    open("logs/log.txt", 'w').close()
+    #open("logs/log.txt", 'w').close()
     # open_file = open(file_name, "wb")
     # pickle.dump(paths, open_file)
     # open_file.close()

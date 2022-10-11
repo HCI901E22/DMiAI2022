@@ -14,13 +14,13 @@ You should know this one ;-)
 ## Step 3: Build the directory
 This assumes you have docker installed on your machine, if not install it. 
 
-```docker build -t KK_robots robot-robbers```
+```docker build -t kk_robots robot-robbers```
 
 NB: you might need to run docker with sudo depending on your setup ¯\_(ツ)_/¯
 
 ## Step 4: Run a docker container from the image
 
-```docker run --env-file robot-robbers/environments/dev/.emily.env -p 4343:4343 -d --name KK_robots KK_robots```
+```docker run --env-file robot-robbers/environments/dev/.emily.env -p 4343:4343 -d --name kk_robots kk_robots```
 
 ## Step 5: Done!
 You should now be done and the api should be ready to receive requests on ```http://0.0.0.0:4343/predict```
