@@ -43,7 +43,8 @@ app.include_router(router.router, tags=['Pig Detection'])
 def hello():
     return {
         "service": "piglet-detection-usecase",
-        "uptime": get_uptime()
+        "uptime": get_uptime(),
+        "Hello": "Hello"
     }
 
 
@@ -59,7 +60,7 @@ def index():
 
 
 if __name__ == '__main__':
-
+    print("Hello")
     uvicorn.run(
         'api:app',
         host=Environment().HOST_IP,
