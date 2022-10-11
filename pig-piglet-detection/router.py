@@ -57,19 +57,14 @@ def predict(img: np.ndarray) -> List[BoundingBoxClassification]:
     global model
     boxes, scores, labels = model.predict(np.expand_dims(img, axis=0))
     count = 0
-
-    for box, score, label in zip(boxes[0], scores[0], labels[0]):
-        # if the model is kinda certain it is a cow return empty array
-        if score > 0.3 and label == 1:
-            return result
     
     for box, score, label in zip(boxes[0], scores[0], labels[0]):
         # scores are sorted so we can break
         count = count + 1
-        if score < 0.2:
+        if score < 0.05:
             print("breaking after " + str(count))
             break
-        score = min(1.0, score + 0.5)
+        score = min(1.0, score + 0.1)
         b = BoundingBoxClassification(class_id=label, min_x=box[0]/img.shape[1], min_y=box[1]/img.shape[0], max_x=box[2]/img.shape[1], max_y=box[3]/img.shape[0], confidence=score)
         result.append(b)
     return result
