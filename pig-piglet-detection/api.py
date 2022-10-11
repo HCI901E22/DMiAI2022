@@ -59,7 +59,7 @@ def index():
 
 
 if __name__ == '__main__':
-
+    print("Hello")
     uvicorn.run(
         'api:app',
         host=Environment().HOST_IP,
